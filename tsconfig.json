@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "lib": [
+      "es2015"
+    ],
+    // 其他编译选项...
+  },
+  // 其他配置...
+}
