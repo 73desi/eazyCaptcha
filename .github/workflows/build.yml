@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - main
+      - dev
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14
-
+          
       - name: 删除 .github 文件夹
         run: rm -rf .github
 
@@ -39,4 +39,6 @@ jobs:
           git config --global user.email "2633043826@qq.com"
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
-          git push
+          git fetch
+          git checkout main
+          git push origin main
