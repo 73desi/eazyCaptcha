@@ -1,11 +1,11 @@
 import code, { codeConfig, CodeType, codeResult } from './index';
 // 普通验证码
-    code().then((res: unknown) => {
-        const result = res as codeResult;
-        save(result.verificationCode as string, result.codeType as string)
-    }).catch((err) => {
-        console.log(err, 'err');
-    })
+// code().then((res: unknown) => {
+//     const result = res as codeResult;
+//     save(result.verificationCode as string, result.codeType as string)
+// }).catch((err) => {
+//     console.log(err, 'err');
+// })
 // // 滚动/拖动验证码
 //     code({
 //         codeType: 'slide',
@@ -24,7 +24,19 @@ import code, { codeConfig, CodeType, codeResult } from './index';
 //     .catch((err) => {
 //         console.log(err, 'err')
 //     })
-    // 保存为图片，测试生成内容是否正确，仅开发使用
+// 点击验证码
+code({
+    codeType: 'click',
+    codeBackImage: './assets/1-300x150.jpg',
+})
+    .then((res: unknown) => {
+        const result = res as codeResult;
+        save(result.verificationCode as string, result.codeType as string)
+    })
+    .catch((err) => {
+        console.log(err, 'err')
+    })
+// 保存为图片，测试生成内容是否正确，仅开发使用
 function save(verificationCode: string, codeType: string) {
     // 保存为图像文件
     const fs = require('fs');
