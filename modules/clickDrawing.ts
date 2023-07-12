@@ -88,7 +88,6 @@ export default async function (config: codeConfig) {
     const crypto = require('crypto');
     const uniqueId = crypto.randomBytes(16).toString('hex')
     verificationCodeManager(uniqueId, 'set', 'click', coordinateList)
-    verificationCodeManager(uniqueId, 'validate')
     return {
         verificationCode: b.canvas.toDataURL(),
         verificationCodeHex: uniqueId,

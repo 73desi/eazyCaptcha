@@ -65,11 +65,10 @@ export default async function (config: codeConfig) {
     ctxFront.putImageData(imgData, dragLayerSize.x * .1, dragLayerSize.x * .1)
     const crypto = require('crypto');
     const uniqueId = crypto.randomBytes(16).toString('hex')
-    verificationCodeManager(uniqueId, 'set', 'calculate', {
+    verificationCodeManager(uniqueId, 'set', 'slide', {
         start: startVerifyCoordinates,
         end: endVerifyCoordinates
     })
-    verificationCodeManager(uniqueId, 'validate')
     return {
         verificationCode: {
             break: b.canvas.toDataURL(),

@@ -58,18 +58,19 @@ export default async function (config: codeConfig, needHandle: boolean) {
             newCoordinate.y = newCoordinate.y + whiteSpace.leftOrRight
             // 判断是不是超出范围是就重新拿
             if (newCoordinate.y > maximumHeightOfCharacters) {
-                return get(havaBigLetter)
+                newCoordinate.y = newCoordinate.y - maximumHeightOfCharacters / 2
+                coordinateSystem.push(newCoordinate)
                 // 判断是不是大字符是的话调整大小
             } else if (newCoordinate.fontSize > bigLetterSize) {
                 newCoordinate.fontSize = newCoordinate.y - bigLetterSize / 2
                 havaBigLetter = true
                 coordinateSystem.push(newCoordinate)
                 // 判断字体是不是过小，是的话调整大小
-            } else if (newCoordinate.fontSize < bigLetterSize/5) {
+            } else if (newCoordinate.fontSize < bigLetterSize / 5) {
                 newCoordinate.fontSize = newCoordinate.y + bigLetterSize / 5
                 havaBigLetter = true
                 coordinateSystem.push(newCoordinate)
-            }else {
+            } else {
                 coordinateSystem.push(newCoordinate)
             }
         }
@@ -141,11 +142,11 @@ function randomCoordinates(text: string, index: number, max: { x: number, y: num
     if (needHandle) {
         const fontSize = havaBigLetter ? max.y / 4 : Math.random() * max.x + Math.random() * 500;
         const sqrt = Math.sqrt(fontSize)
-        const x = Math.floor(Math.random() * max.x) - sqrt + index * max.x;
+        const x = Math.floor(Math.random() * max.x) - sqrt + (index * max.x);
         const y = Math.floor(Math.random() * max.y) + sqrt;
         return { text, x, y, fontSize, roat: R }
     } else {
-        return { text, x: max.x * 0.75, y: max.y * 0.56, fontSize: max.y * 0.4, roat: R }
+        return { text, x: max.x * 0.75 + (index * max.x), y: max.y * 0.56, fontSize: max.y * 0.4, roat: R }
     }
 }
 
