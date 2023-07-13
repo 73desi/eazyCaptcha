@@ -19,9 +19,7 @@ jobs:
           node-version: 14
           
       - name: 删除不需要再主项目中显示的文件
-        run: |
-          rm -rf .github
-          rm tsconfig.json
+        run: rm -rf .github
 
       - name: 安装依赖
         run: npm i
@@ -33,7 +31,7 @@ jobs:
         run: npx tsc
 
       - name: 移除ts结尾的文件
-        run: find . -type f -name "*.ts" ! -name "*.d.ts" -delete
+        run: find . -name "*.ts" -type f -delete
 
       - name: 提交更改至main
         run: |
