@@ -7,6 +7,20 @@
 ```shell
 npm i eazyCaptcha
 ```
+**注意**
+
+如果安装canvas报错
+```shell
+npm ERR! path /home/des/Desktop/verificationCode/node_modules/canvas
+npm ERR! command failed
+npm ERR! signal SIGINT
+npm ERR! command sh -c node-pre-gyp install --fallback-to-build --update-binary
+```
+可以尝试
+
+```shell
+npm install canvas --canvas_binary_host_mirror=https://registry.npmmirror.com/-/binary/canvas
+```
 
 使用
 
@@ -77,19 +91,5 @@ res输出内容结构
     status:boolean,//验证是否成功
     hex:string//唯一哈希值
 }
-```
-**注意**
-
-如果安装canvas报错
-```shell
-npm ERR! path /home/des/Desktop/verificationCode/node_modules/canvas
-npm ERR! command failed
-npm ERR! signal SIGINT
-npm ERR! command sh -c node-pre-gyp install --fallback-to-build --update-binary
-```
-可以尝试
-
-```shell
-npm install canvas --canvas_binary_host_mirror=https://registry.npmmirror.com/-/binary/canvas
 ```
 
