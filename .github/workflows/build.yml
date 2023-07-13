@@ -35,16 +35,10 @@ jobs:
       - name: 移除ts结尾的文件
         run: find . -type f -name "*.ts" ! -name "*.d.ts" -delete
 
-
-      - name: 获取用户信息
+      - name: 提交更改至main
         run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-
-      - name: 添加和保存commit信息
-        run: |
+          git config --global user.name "73desi"
+          git config --global user.email "2633043826@qq.com"
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
-
-      - name: 推送更新
-        run: git push
+          git push
