@@ -100,7 +100,7 @@ function save(verificationCode: string, codeType: string) {
     // 保存为图像文件
     const fs = require('fs');
     const path = require('path');
-    const codeName = `${codeType}::${Date.now()}.png`
+    const codeName = `${codeType}_${Date.now()}.png`
     const filePath = path.join(__dirname, 'verificationCode')
     fs.stat(filePath, (err: any, stats: any) => {
         if (err) {

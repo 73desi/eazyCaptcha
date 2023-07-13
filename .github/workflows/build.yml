@@ -18,8 +18,10 @@ jobs:
         with:
           node-version: 14
           
-      - name: 删除 .github 文件夹
-        run: rm -rf .github
+      - name: 删除不需要再主项目中显示的文件
+        run: |
+          rm -rf .github
+          rm tsconfig.json
 
       - name: 安装依赖
         run: npm i
@@ -31,12 +33,18 @@ jobs:
         run: npx tsc
 
       - name: 移除ts结尾的文件
-        run: find . -name "*.ts" -type f -delete
+        run: find . -type f -name "*.ts" ! -name "*.d.ts" -delete
 
-      - name: 提交更改至main
+
+      - name: 获取用户信息
         run: |
-          git config --global user.name "73desi"
-          git config --global user.email "2633043826@qq.com"
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: 添加和保存commit信息
+        run: |
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
-          git push
+
+      - name: 推送更新
+        run: git push
