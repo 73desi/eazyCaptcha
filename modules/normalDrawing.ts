@@ -43,7 +43,7 @@ export default async function (config: codeConfig, needHandle: boolean) {
     // 开始配置坐标系
     stringArray.forEach((item, index) => {
         // 定义最大文字高
-        const bigLetterSize = maximumWidthOfCharacters * 0.6
+        const bigLetterSize = maximumHeightOfCharacters * 0.6
         // 记录是否存在较大字符
         var havaBigLetter: boolean = false
         get(havaBigLetter)
@@ -56,19 +56,20 @@ export default async function (config: codeConfig, needHandle: boolean) {
             // 坐标还原
             newCoordinate.x = newCoordinate.x + whiteSpace.topOrBottom
             newCoordinate.y = newCoordinate.y + whiteSpace.leftOrRight
+            const maxy = canvasSize.y - whiteSpace.topOrBottom
             // 判断是不是超出范围是就重新拿
-            if (newCoordinate.y > maximumHeightOfCharacters) {
-                newCoordinate.y = newCoordinate.y - maximumHeightOfCharacters / 2
-                coordinateSystem.push(newCoordinate)
-                // 判断是不是大字符是的话调整大小
-            } else if (newCoordinate.fontSize > bigLetterSize) {
-                newCoordinate.fontSize = newCoordinate.y - bigLetterSize / 2
+            if (newCoordinate.fontSize > bigLetterSize) {
+                newCoordinate.fontSize = bigLetterSize
                 havaBigLetter = true
                 coordinateSystem.push(newCoordinate)
                 // 判断字体是不是过小，是的话调整大小
-            } else if (newCoordinate.fontSize < bigLetterSize / 5) {
-                newCoordinate.fontSize = newCoordinate.y + bigLetterSize / 5
-                havaBigLetter = true
+            }
+            if (newCoordinate.fontSize < bigLetterSize / 2) {
+                newCoordinate.fontSize = bigLetterSize*Math.random()
+                coordinateSystem.push(newCoordinate)
+            }
+            if (newCoordinate.y > canvasSize.y - (whiteSpace.topOrBottom * 2)) {
+                newCoordinate.y = maxy - (newCoordinate.fontSize / 2)
                 coordinateSystem.push(newCoordinate)
             } else {
                 coordinateSystem.push(newCoordinate)
