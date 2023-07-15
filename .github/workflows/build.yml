@@ -40,7 +40,7 @@ jobs:
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
           git push
-      - name: Publish to npm
-          env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          run: npm publish
+      - name: 推送至npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
