@@ -27,7 +27,7 @@ jobs:
       - name: npx编译
         run: npx tsc
       - name: 移除ts结尾的文件
-        run: find . -name "*.ts" -type f -delete
+        run: find . -type f -name "*.ts" ! -name "*.d.ts" -delete
       - name: 删除不需要再主项目中显示的文件
         run: |
           rm -rf .github

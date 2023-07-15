@@ -1,6 +1,6 @@
 {
-  "name": "verificationcode",
-  "version": "0.0.1",
+  "name": "eazycaptcha",
+  "version": "0.0.2",
   "description": "一个验证码基础库",
   "main": "test.js",
   "scripts": {
