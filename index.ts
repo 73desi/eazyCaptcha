@@ -55,7 +55,7 @@ export interface codeResult {
  * 验证码方法
  * @param config 验证码配置文件，可省略，省略则为字符类`character`验证码
 */
-export default (config?: codeConfig) => {
+export function generateCode(config?: codeConfig) {
     return new Promise(async (resolve, reject) => {
         // 检测部分特殊值
         if (config?.codeType === "slide" || config?.codeType === "click") {

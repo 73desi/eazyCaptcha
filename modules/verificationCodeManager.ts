@@ -1,6 +1,7 @@
 import { CodeType, codeConfig } from "../index";
 type handle = 'set' | 'validate'
-var verificationCodeStorage: { key: string, value: string | object, type: CodeType }[] = []
+var verificationCodeStorage: { key: string, value: string | object, type: CodeType, endTimer: number }[] = []
+var timer = <any>undefined
 /**
  * 管理验证码
  * @param hex hex值
@@ -11,10 +12,12 @@ var verificationCodeStorage: { key: string, value: string | object, type: CodeTy
 export default (hex: string, handle: handle, type?: CodeType, value?: string | object, finalConfigurationFile?: codeConfig) => {
     if (handle === 'set') {
         if (value) {
-            verificationCodeStorage.push({ key: hex, value, type })
+            const endTimer = Date.now() + (10 * 60 * 1000)
+            verificationCodeStorage.push({ key: hex, value, type, endTimer })
         } else {
             return console.log('需要设置项value')
         }
+        verificationCodeTimer()
     } else {
         const code = verificationCodeStorage.find(item => item.key === hex)
         interface xyTemlate { x: number, y: number }
@@ -24,20 +27,30 @@ export default (hex: string, handle: handle, type?: CodeType, value?: string | o
                     value = value.toString().toLowerCase()
                     code.value = code.value.toString().toLowerCase()
                 }
-                return value == code.value ? {
-                    status: true,
-                    hex
-                } : {
-                    status: false,
-                    hex
-                };
+                if (value == code.value) {
+                    clearItem(code.key)
+                    return {
+                        status: true,
+                        hex
+                    }
+                } else {
+                    return {
+                        status: false,
+                        hex
+                    };
+                }
             case "calculate":
-                return value == code.value ? {
-                    status: true,
-                    hex
-                } : {
-                    status: false,
-                    hex
+                if (value == code.value) {
+                    clearItem(code.key)
+                    return {
+                        status: true,
+                        hex
+                    }
+                } else {
+                    return {
+                        status: false,
+                        hex
+                    }
                 }
             case "slide":
                 if (typeof value !== 'object') {
@@ -50,6 +63,7 @@ export default (hex: string, handle: handle, type?: CodeType, value?: string | o
                     const { start } = code.value as { start: xyTemlate }
                     const offsetValue = finalConfigurationFile.rangeValue
                     if (x + offsetValue > start.x && start.x < x - offsetValue && y + offsetValue > start.y && start.y < y - offsetValue) {
+                        clearItem(code.key)
                         return {
                             status: false,
                             hex
@@ -88,4 +102,22 @@ export default (hex: string, handle: handle, type?: CodeType, value?: string | o
                 break;
         }
     }
+}
+// 定时器
+function verificationCodeTimer() {
+    if (timer) {
+        clearInterval(timer)
+    } else {
+        timer = setInterval(() => {
+            if (verificationCodeStorage.length > 0) {
+                const now = Date.now()
+                verificationCodeStorage = verificationCodeStorage.filter(item => item.endTimer > now)
+            }
+        }, 1000)
+    }
+}
+// 清除指定id的项
+function clearItem(hex: string) {
+    verificationCodeStorage = verificationCodeStorage.filter(item => item.key !== hex)
+    verificationCodeTimer()
 }

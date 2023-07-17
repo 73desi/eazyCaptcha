@@ -1,7 +1,7 @@
-import code, { codeConfig, CodeType, codeResult, validate } from './index';
+import { generateCode, validate, codeConfig, CodeType, codeResult } from './index';
 import { createInterface } from "readline";
 // 普通验证码
-code().then((res: unknown) => {
+generateCode().then((res: unknown) => {
     const result = res as codeResult;
     save(result.verificationCode as string, result.codeType as string)
     // 定义控制台输入

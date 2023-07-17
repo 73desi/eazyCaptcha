@@ -25,7 +25,7 @@ npm install canvas --canvas_binary_host_mirror=https://registry.npmmirror.com/-/
 使用
 
 ```javascript
-import eazyCaptcha,{validate} from 'eazycaptcha';
+import { generateCode, validate, codeConfig, CodeType, codeResult } from './index';
 ```
 
 如需自定义配置,按照以下内容修改
@@ -47,7 +47,7 @@ const config = {
 创建验证码
 ```javascript
 //可以不携带任何参数，将会送出一组文字验证码
-eazyCaptcha(config).then((res: any) => {
+generateCode(config).then((res: any) => {
     console.log(res.verificationCodeHex, 'res');
 }).catch((err)=>{
     console.log(err,'err');

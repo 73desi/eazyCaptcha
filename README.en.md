@@ -26,20 +26,12 @@ npm install canvas --canvas_binary_host_mirror=https://registry.npmmirror.com/-/
 Usage
 
 ```javascript
-import eazyCaptcha from 'eazyCaptcha';
-```
-```javascript
-// You can call the function without any parameters to generate a set of text captcha
-eazyCaptcha().then((res: any) => {
-    console.log(res.verificationCodeHex, 'res');
-}).catch((err)=>{
-    console.log(err,'err');
-})
+import { generateCode, validate, codeConfig, CodeType, codeResult } from './index';
 ```
 If you need a different type of captcha, you can modify the parameters based on the default template below:
 
 ```typescript
-{ 
+const config = { 
     codeType: <codeType>'character', // Type of captcha: text (default) 'character', calculation 'calculate', dragging 'slide', clicking 'click'
     characterString: <string>'', // Captcha string or character array. If not provided, a random set will be generated. Can be Chinese, English, numbers, or special characters. For the 'click' type, it is the text displayed above.
     codeSize: <number>'300*150', // Captcha size. Supports formats '200*100' and '200x100'
@@ -52,6 +44,14 @@ If you need a different type of captcha, you can modify the parameters based on 
     saveOrNot: <boolean>true, // Whether to save the rendered captcha locally. It will be saved in the 'verificationCode' folder.
     colorGroup: <string[]|string>['#dc3545', '#0dcaf0', '#ffc107', '#198', '#0d6efd'] // Text color group. Can be an array or a single color value. Supports all standard color values.
 }
+```
+```javascript
+// You can call the function without any parameters to generate a set of text captcha
+generateCode(config).then((res: any) => {
+    console.log(res.verificationCodeHex, 'res');
+}).catch((err)=>{
+    console.log(err,'err');
+})
 ```
 Output structure of the 'res' object:
 
@@ -74,5 +74,21 @@ Output structure of the 'res' object:
     status: boolean,
     // Type of captcha
     codeType: CodeType
+}
+```
+Conduct verification
+```javascript
+//You need to pass in the unique hex value of the verification code to verify the content
+ validate(result.verificationCodeHex, value).then(val => {
+            console.log(val);
+        }).catch(err => {
+            console.log(err);
+        })
+```
+Validated return value
+```typescript
+{
+    status:boolean,//Verify success
+    hex:string//Unique hash value
 }
 ```
