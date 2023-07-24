@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - dev
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,20 +18,20 @@ jobs:
         with:
           node-version: 14
           
-      - name: 删除 .github 文件夹
-        run: rm -rf .github
-
+          
       - name: 安装依赖
         run: npm i
-
+          
       - name: 安装一个干净的项目
         run: npm ci
-
       - name: npx编译
         run: npx tsc
-
       - name: 移除ts结尾的文件
-        run: find . -name "*.ts" -type f -delete
+        run: find . -type f -name "*.ts" ! -name "*.d.ts" -delete
+      - name: 删除不需要再主项目中显示的文件
+        run: |
+          rm -rf .github
+          rm tsconfig.json
 
       - name: 提交更改至main
         run: |
@@ -39,6 +39,8 @@ jobs:
           git config --global user.email "2633043826@qq.com"
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
-          git fetch
-          git checkout main
-          git push origin main
+          git push
+      - name: 推送至npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish

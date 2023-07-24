@@ -1,8 +1,7 @@
-import { StringifyOptions } from "querystring";
 import characterCode from "./code/characterCode";
 import calculateCode from "./code/calculateCode";
 import slideAndClickCode from "./code/slideAndClickCode";
-
+import verificationCodeManager from "./modules/verificationCodeManager";
 /**
  * @param codeType 可选值：字符`character`、计算`calculate`、滑动`slide`、点击`click`
  */
@@ -12,6 +11,8 @@ export type CodeType = 'character' | 'calculate' | 'slide' | 'click'
  * @param codeType 验证码类型，`character` 、 `calculate` 、 `slide` 、 `click`默认`character`
  * @param characterString 验证码字符串、字符数组,不传入则随机生成一组,可以为中文、英文、数字、特殊符号，如果是`click`类型则为上方的字
  * @param codeSize 验证码尺寸支持`200*100`和`200*100`俩种格式,默认`300*150`
+ * @param matchCase `character`是否区分大小写
+ * @param rangeValue `slide` 、 `click`俩种类型误差值，从+rangeValue到-rangeValue的四个方向的范围值
  * @param codeBackImage 验证码的背景图片或者颜色，如果是`slide`、`click`验证码必须传入图片url,默认'#fff',支持16进制的颜色值
  * @param characterLength 字符长度,默认`4`,除`slide`以外都生效
  * @param rotationAngle 旋转角度,默认`0`,可以在`1`~`-1`之间选择，不推荐超过这个值
@@ -22,8 +23,8 @@ export interface codeConfig {
     codeType?: CodeType, characterString?: string,
     codeSize?: string, codeBackImage?: string,
     characterLength?: number, rotationAngle?: number,
-    disturbingLinesNumber?: number,
-    colorGroup?: string | string[]
+    disturbingLinesNumber?: number, matchCase?: boolean,
+    colorGroup?: string | string[], rangeValue?: number
 }
 
 /**
@@ -34,7 +35,7 @@ export const defaultCodeConfig: codeConfig =
     codeType: 'character', characterString: '', characterLength: 4,
     rotationAngle: 0, disturbingLinesNumber: 3, codeBackImage: '#fff',
     colorGroup: ['#dc3545', '#0dcaf0', '#ffc107', '#198', '#0d6efd'],
-    codeSize: '300*150'
+    codeSize: '300*150', matchCase: true, rangeValue: 20
 }
 /**
  * 结束导出内容
@@ -54,7 +55,7 @@ export interface codeResult {
  * 验证码方法
  * @param config 验证码配置文件，可省略，省略则为字符类`character`验证码
 */
-export default (config?: codeConfig) => {
+export function generateCode(config?: codeConfig) {
     return new Promise(async (resolve, reject) => {
         // 检测部分特殊值
         if (config?.codeType === "slide" || config?.codeType === "click") {
@@ -79,6 +80,35 @@ export default (config?: codeConfig) => {
             case 'click':
                 const clickRes = await slideAndClickCode(config)
                 clickRes?.status ? resolve(clickRes) : reject(clickRes?.verificationCode)
+        }
+    })
+}
+/**
+ * 验证码验证
+ * @param hex 唯一哈希值
+ * @param value 验证内容字符串或者xy坐标或者xy坐标数组
+ * @param finalConfigurationFile 配置文件
+ * @returns 
+ */
+export function validate(hex: string, value: string | {
+    x: number,
+    y: number
+} | {
+    x: number,
+    y: number
+}[], config?: codeConfig) {
+    return new Promise(async (resolve, reject) => {
+        const res = <{ status: boolean, hex: string }>verificationCodeManager(hex, 'validate', null, value, { ...defaultCodeConfig, ...config })
+        if (res.status) {
+            resolve({
+                status: res.status,
+                hex: res.hex
+            })
+        } else {
+            reject({
+                status: res.status,
+                hex: res.hex
+            })
         }
     })
 }

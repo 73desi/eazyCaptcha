@@ -43,7 +43,7 @@ export default async function (config: codeConfig, needHandle: boolean) {
     // 开始配置坐标系
     stringArray.forEach((item, index) => {
         // 定义最大文字高
-        const bigLetterSize = maximumWidthOfCharacters * 0.6
+        const bigLetterSize = maximumHeightOfCharacters * 0.6
         // 记录是否存在较大字符
         var havaBigLetter: boolean = false
         get(havaBigLetter)
@@ -56,20 +56,22 @@ export default async function (config: codeConfig, needHandle: boolean) {
             // 坐标还原
             newCoordinate.x = newCoordinate.x + whiteSpace.topOrBottom
             newCoordinate.y = newCoordinate.y + whiteSpace.leftOrRight
+            const maxy = canvasSize.y - whiteSpace.topOrBottom
             // 判断是不是超出范围是就重新拿
-            if (newCoordinate.y > maximumHeightOfCharacters) {
-                return get(havaBigLetter)
-                // 判断是不是大字符是的话调整大小
-            } else if (newCoordinate.fontSize > bigLetterSize) {
-                newCoordinate.fontSize = newCoordinate.y - bigLetterSize / 2
+            if (newCoordinate.fontSize > bigLetterSize) {
+                newCoordinate.fontSize = bigLetterSize
                 havaBigLetter = true
                 coordinateSystem.push(newCoordinate)
                 // 判断字体是不是过小，是的话调整大小
-            } else if (newCoordinate.fontSize < bigLetterSize/5) {
-                newCoordinate.fontSize = newCoordinate.y + bigLetterSize / 5
-                havaBigLetter = true
+            }
+            if (newCoordinate.fontSize < bigLetterSize / 2) {
+                newCoordinate.fontSize = bigLetterSize*Math.random()
                 coordinateSystem.push(newCoordinate)
-            }else {
+            }
+            if (newCoordinate.y > canvasSize.y - (whiteSpace.topOrBottom * 2)) {
+                newCoordinate.y = maxy - (newCoordinate.fontSize / 2)
+                coordinateSystem.push(newCoordinate)
+            } else {
                 coordinateSystem.push(newCoordinate)
             }
         }
@@ -141,11 +143,11 @@ function randomCoordinates(text: string, index: number, max: { x: number, y: num
     if (needHandle) {
         const fontSize = havaBigLetter ? max.y / 4 : Math.random() * max.x + Math.random() * 500;
         const sqrt = Math.sqrt(fontSize)
-        const x = Math.floor(Math.random() * max.x) - sqrt + index * max.x;
+        const x = Math.floor(Math.random() * max.x) - sqrt + (index * max.x);
         const y = Math.floor(Math.random() * max.y) + sqrt;
         return { text, x, y, fontSize, roat: R }
     } else {
-        return { text, x: max.x * 0.75, y: max.y * 0.56, fontSize: max.y * 0.4, roat: R }
+        return { text, x: max.x * 0.75 + (index * max.x), y: max.y * 0.56, fontSize: max.y * 0.4, roat: R }
     }
 }
 
