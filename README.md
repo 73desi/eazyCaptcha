@@ -32,7 +32,7 @@ npm install canvas --canvas_binary_host_mirror=https://registry.npmmirror.com/-/
 **使用**
 
 ```javascript
-import { generateCode, validate, codeConfig, CodeType, codeResult } from './index';
+import { generateCode, validate, codeConfig, CodeType, codeResult } from 'eazycaptcha';
 ```
 
 如需自定义配置,按照以下内容修改
