@@ -2,14 +2,21 @@
 
 依赖:node版本`^16.14.2`、canvas: `^2.11.2`
 
-安装
+**安装**
 
+npm
 ```shell
 npm i eazycaptcha
 ```
+
+yarn(推荐)
+```shell
+yarn add eazycaptcha
+```
+
 **注意**
 
-如果安装canvas报错
+如果npm安装canvas报错
 ```shell
 npm ERR! path /home/des/Desktop/verificationCode/node_modules/canvas
 npm ERR! command failed
@@ -22,7 +29,7 @@ npm ERR! command sh -c node-pre-gyp install --fallback-to-build --update-binary
 npm install canvas --canvas_binary_host_mirror=https://registry.npmmirror.com/-/binary/canvas
 ```
 
-使用
+**使用**
 
 ```javascript
 import { generateCode, validate, codeConfig, CodeType, codeResult } from './index';
@@ -44,7 +51,7 @@ const config = {
     colorGroup: <string[]|string>['#dc3545', '#0dcaf0', '#ffc107', '#198', '#0d6efd']// 文字颜色组,可以为数组或者单个颜色值支持所有标准的颜色值
     }
 ```
-创建验证码
+**创建验证码**
 ```javascript
 //可以不携带任何参数，将会送出一组文字验证码
 generateCode(config).then((res: any) => {
@@ -76,7 +83,7 @@ res输出内容结构
     codeType:CodeType
 }
 ```
-进行验证
+**进行验证**
 ```javascript
 //需要传入验证码的唯一hex值，验证内容
  validate(result.verificationCodeHex, value).then(val => {

@@ -21,86 +21,94 @@ export default (hex: string, handle: handle, type?: CodeType, value?: string | o
     } else {
         const code = verificationCodeStorage.find(item => item.key === hex)
         interface xyTemlate { x: number, y: number }
-        switch (code.type) {
-            case 'character':
-                if (finalConfigurationFile && !finalConfigurationFile.matchCase) {
-                    value = value.toString().toLowerCase()
-                    code.value = code.value.toString().toLowerCase()
-                }
-                if (value == code.value) {
-                    clearItem(code.key)
-                    return {
-                        status: true,
-                        hex
+        if(code){
+            switch (code.type) {
+                case 'character':
+                    if (finalConfigurationFile && !finalConfigurationFile.matchCase) {
+                        value = value.toString().toLowerCase()
+                        code.value = code.value.toString().toLowerCase()
                     }
-                } else {
-                    return {
-                        status: false,
-                        hex
-                    };
-                }
-            case "calculate":
-                if (value == code.value) {
-                    clearItem(code.key)
-                    return {
-                        status: true,
-                        hex
-                    }
-                } else {
-                    return {
-                        status: false,
-                        hex
-                    }
-                }
-            case "slide":
-                if (typeof value !== 'object') {
-                    return {
-                        status: false,
-                        hex: '注意，slide类型验证码需要是一个包含左上角xy值的二维坐标对象,例如{x:1,y:2}'
-                    }
-                } else {
-                    const { x, y } = value as xyTemlate
-                    const { start } = code.value as { start: xyTemlate }
-                    const offsetValue = finalConfigurationFile.rangeValue
-                    if (x + offsetValue > start.x && start.x < x - offsetValue && y + offsetValue > start.y && start.y < y - offsetValue) {
+                    if (value == code.value) {
                         clearItem(code.key)
+                        return {
+                            status: true,
+                            hex
+                        }
+                    } else {
+                        return {
+                            status: false,
+                            hex
+                        };
+                    }
+                case "calculate":
+                    if (value == code.value) {
+                        clearItem(code.key)
+                        return {
+                            status: true,
+                            hex
+                        }
+                    } else {
                         return {
                             status: false,
                             hex
                         }
+                    }
+                case "slide":
+                    if (typeof value !== 'object') {
+                        return {
+                            status: false,
+                            hex: '注意，slide类型验证码需要是一个包含左上角xy值的二维坐标对象,例如{x:1,y:2}'
+                        }
                     } else {
+                        const { x, y } = value as xyTemlate
+                        const { start } = code.value as { start: xyTemlate }
+                        const offsetValue = finalConfigurationFile.rangeValue
+                        if (x + offsetValue > start.x && start.x < x - offsetValue && y + offsetValue > start.y && start.y < y - offsetValue) {
+                            clearItem(code.key)
+                            return {
+                                status: false,
+                                hex
+                            }
+                        } else {
+                            return {
+                                status: true,
+                                hex
+                            }
+                        }
+                    }
+                case "click":
+                    if (Array.isArray(value)) {
+                        return {
+                            status: false,
+                            hex: 'click必须是一组xy对象的数组例如:[{x:1,y:2},{x:3,y:4},...]'
+                        }
+                    } else {
+                        const { start } = code.value as { start: xyTemlate }
+                        const offsetValue = finalConfigurationFile.rangeValue
+                        const val = value as xyTemlate[]
+                        val.forEach(item => {
+                            if (item.x + offsetValue > start.x && start.x < item.x - offsetValue && item.y + offsetValue > start.y && start.y < item.y - offsetValue) {
+                                return {
+                                    status: false,
+                                    hex
+                                }
+                            }
+                        })
                         return {
                             status: true,
                             hex
                         }
                     }
-                }
-            case "click":
-                if (Array.isArray(value)) {
-                    return {
-                        status: false,
-                        hex: 'click必须是一组xy对象的数组例如:[{x:1,y:2},{x:3,y:4},...]'
-                    }
-                } else {
-                    const { start } = code.value as { start: xyTemlate }
-                    const offsetValue = finalConfigurationFile.rangeValue
-                    const val = value as xyTemlate[]
-                    val.forEach(item => {
-                        if (item.x + offsetValue > start.x && start.x < item.x - offsetValue && item.y + offsetValue > start.y && start.y < item.y - offsetValue) {
-                            return {
-                                status: false,
-                                hex
-                            }
-                        }
-                    })
-                    return {
-                        status: true,
-                        hex
-                    }
-                }
-            default:
-                break;
+                default:
+                    break;
+            }
+        }else{
+            return {
+                status: false,
+                hex: '不存在该验证码'
+            }
         }
+        
     }
 }
 // 定时器
