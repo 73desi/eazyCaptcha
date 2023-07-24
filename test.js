@@ -1,25 +1,27 @@
-import { generateCode, validate, codeConfig, CodeType, codeResult } from './index';
-import { createInterface } from "readline";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = require("./index");
+var readline_1 = require("readline");
 // 普通验证码
-generateCode().then((res: unknown) => {
-    const result = res as codeResult;
-    save(result.verificationCode as string, result.codeType as string)
+(0, index_1.generateCode)().then(function (res) {
+    var result = res;
+    save(result.verificationCode, result.codeType);
     // 定义控制台输入
-    const write = createInterface({
+    var write = (0, readline_1.createInterface)({
         input: process.stdin,
         output: process.stdout
-    })
+    });
     // 进行检测
-    write.on('line', (line: string) => {
-        validate(result.verificationCodeHex, line).then(val => {
+    write.on('line', function (line) {
+        (0, index_1.validate)(result.verificationCodeHex, line).then(function (val) {
             console.log(val);
-        }).catch(err => {
+        }).catch(function (err) {
             console.log(err);
-        })
-    })
-}).catch((err) => {
+        });
+    });
+}).catch(function (err) {
     console.log(err, 'err');
-})
+});
 // // 计算验证码
 // code({
 //     codeType:'calculate'
@@ -96,22 +98,23 @@ generateCode().then((res: unknown) => {
 //         console.log(err, 'err')
 //     })
 // 保存为图片，测试生成内容是否正确，仅开发使用
-function save(verificationCode: string, codeType: string) {
+function save(verificationCode, codeType) {
     // 保存为图像文件
-    const fs = require('fs');
-    const path = require('path');
-    const codeName = `${codeType}_${Date.now()}.png`
-    const filePath = path.join(__dirname, 'verificationCode')
-    fs.stat(filePath, (err: any, stats: any) => {
+    var fs = require('fs');
+    var path = require('path');
+    var codeName = "".concat(codeType, "_").concat(Date.now(), ".png");
+    var filePath = path.join(__dirname, 'verificationCode');
+    fs.stat(filePath, function (err, stats) {
         if (err) {
-            fs.mkdir(filePath, () => { })
+            fs.mkdir(filePath, function () { });
         }
-        fs.writeFile(path.join(filePath, codeName), Buffer.from(verificationCode.replace(/^data:image\/\w+;base64,/, ''), 'base64'), 'base64', (err: boolean) => {
+        fs.writeFile(path.join(filePath, codeName), Buffer.from(verificationCode.replace(/^data:image\/\w+;base64,/, ''), 'base64'), 'base64', function (err) {
             if (err) {
                 console.error('保存图片失败:', err);
-            } else {
+            }
+            else {
                 console.log('图片保存成功:', codeName);
             }
         });
-    })
+    });
 }
